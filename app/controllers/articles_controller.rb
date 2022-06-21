@@ -47,13 +47,18 @@ class ArticlesController < ApplicationController
   end
 
   def destroy
-    if @article.destroy
-      flash[:sucess] = "Article has been deleted"
-      redirect_to articles_path
+    unless @article.user == current_user
+      flash[:alert] = "You can only delete your own article."
+      redirect_to root_path
+    else
+      if @article.destroy
+        flash[:sucess] = "Article has been deleted"
+        redirect_to articles_path
+      end
     end
   end
 
-protected
+  protected
 
   def resource_not_found
     message = "The article you are looking for could not be found"
